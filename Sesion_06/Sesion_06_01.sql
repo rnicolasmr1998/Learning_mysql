@@ -4,22 +4,22 @@
 la cantidad total de ventas que han realizado.
 */
 USE mi_bd;
-SELECT emp.nombre, emp.apellido, SUM(ven.monto_total) AS total_ventas
+SELECT emp.nombre, emp.apellido, SUM(ven.monto_total) 'total_ventas'
 FROM empleados `emp`
 INNER JOIN ventas `ven`
     ON ven.empleado_id = emp.id
-GROUP BY emp.nombre, emp.apellido
-ORDER BY total_ventas DESC;
+GROUP BY emp.id
+ORDER BY SUM(ven.monto_total) DESC;
 
 /*
 -- 2. Calcula el monto total vendido a cada cliente y muestra el 
 nombre del cliente, su dirección y el monto total.
 */
-SELECT cli.nombre, cli.direccion, SUM(ven.monto_total) AS total_ventas
+SELECT cli.nombre, cli.direccion, SUM(ven.monto_total) 'total_ventas'
 FROM clientes `cli`
 LEFT JOIN ventas `ven`
     ON ven.cliente_id = cli.id
-GROUP BY cli.nombre, cli.direccion
+GROUP BY cli.id
 ORDER BY total_ventas DESC;
 
 /*
@@ -28,7 +28,7 @@ departamento de "Ventas" y muestra el nombre del empleado junto
 con el nombre de los productos que han vendido.
 */
 SELECT emp.nombre 'nombre_empleado', emp.apellido 'apellido_empleado', 
-	   prod.nombre 'nombre_producto'
+	   prod.nombre 'nombre_producto', SUM(vent.cantidad) 'cantidad_productos'
 FROM empleados `emp`
 INNER JOIN departamentos `dep`
 	ON emp.departamento_id = dep.id
@@ -37,7 +37,8 @@ INNER JOIN ventas `vent`
 INNER JOIN productos `prod`
 	ON vent.producto_id = prod.id
 WHERE dep.nombre = "Ventas"
-ORDER BY emp.nombre, emp.apellido;
+GROUP BY emp.nombre, emp.apellido, prod.nombre
+ORDER BY SUM(vent.cantidad) DESC;
 
 /*
 -- 4. Encuentra el nombre del cliente, el nombre del producto 
